@@ -4,5 +4,8 @@ python:
     - "3.4"
 before_install:
     - pip install pytest pytest-cov
+    - pip install coveralls
 script:
     - py.test
+    - coverage run --source=home errortest.py test home
+after_success: coveralls
