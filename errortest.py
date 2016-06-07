@@ -8,6 +8,11 @@ class Test(unittest.TestCase):
         self.failUnlessEqual(human_read(2500000), "2.00MBps")
         self.failUnlessEqual(human_read(0), "0Bps")
 
+
+    def test_main(self):
+        self.assertRaises(Exception, main_bw_test())
+
+
 if __name__ == '__main__':
-	unittest.main()
+    unittest.main()
 

@@ -33,7 +33,7 @@ def human_read(data):
     return str(str(new_number) + str(data_sizes[i]))
 
 
-def main():
+def main_bw_test():
     prevBI = 0
     prevBO = 0
     prevPI = 0
@@ -41,13 +41,16 @@ def main():
     prevEI = 0
     prevEO = 0
     times_run = 0
+    if len(sys.argv) != 2:
+        print("Number of arguments incorrect")
+        sys.exit()
     devname = str(sys.argv[1])
     while True:
         try:
             with open('/proc/net/dev', 'r') as dev_file:
                 interf = devname + ':'
                 if str(interf) not in interfaces():
-                        sys.exit("Please use a valid interface name.")
+                    sys.exit("Please use a valid interface name.")
                 else:
                     # At the 200th char
                     try:
@@ -94,5 +97,4 @@ def main():
             print("'/proc/net/dev' not available. ")
             sys.exit()
 
-if __name__ == "__main__":
-    main()
+main_bw_test()
