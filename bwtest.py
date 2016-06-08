@@ -9,6 +9,7 @@ def interfaces():
         for line in dev_file:
             arr = line.split()
             interface_list.append(arr[0])
+        print interface_list
         return interface_list
 
 
