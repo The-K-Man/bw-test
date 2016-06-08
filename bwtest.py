@@ -14,10 +14,12 @@ def interfaces():
 
 # Prints the header
 def header(name):
-    print (name + " |   Receive                         |  Transmit")
-    print (" " * len(name) +
-           " |bytes       packets       errs     |bytes       " +
-           "packets       errs")
+    header_tuple = (str(name + 
+                    " |   Receive                         |  Transmit"),
+                    str(" " * len(name) +
+                    " |bytes       packets       errs     |bytes       "+
+                    "packets       errs"))
+    return header_tuple
 
 
 # Makes data in Bytes human readable
@@ -60,7 +62,9 @@ def main_bw_test():
                             if str(arr[0]) == str(interf):
                                 name = str(arr[0])
                                 if times_run % 10 == 0:
-                                    header(name)
+                                    new_tup =  header(name)
+                                    print new_tup[0]
+                                    print new_tup[1]
                                 bytes_in = human_read(int(arr[1]) - prevBI)
                                 bytes_out = human_read(int(arr[9]) - prevBO)
                                 packet_in = human_read(int(arr[2]) - prevPI)
@@ -97,4 +101,5 @@ def main_bw_test():
             print("'/proc/net/dev' not available. ")
             sys.exit()
 
-main_bw_test()
+if __name__ == "__main__":
+   main_bw_test()
