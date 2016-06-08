@@ -2,6 +2,8 @@ import unittest
 from bwtest import human_read
 
 class Test(unittest.TestCase):
+    
+
     def test_basic_addition(self):
         self.failUnlessEqual(human_read(1), "1.00Bps")
         self.failUnlessEqual(human_read(2000), "1.00KBps")
