@@ -1,3 +1,4 @@
+import sys
 import unittest
 from bwtest import human_read, interfaces, header
 
@@ -12,7 +13,6 @@ class Test(unittest.TestCase):
 
     def test_interfaces(self):
         self.failUnlessEqual(interfaces(), interfaces())
-        #self.failUnlessEqual(interfaces(), ['Inter-|', 'face', 'enp68s0f0:', 'enp67s0f1:', 'eno1:', 'eno2:', 'eno3:', 'eno4:', 'enp67s0f0:', 'lo:', 'virbr0-nic:', 'virbr0:', 'enp68s0f1:'])
 
 
     def test_header(self):
@@ -23,5 +23,13 @@ class Test(unittest.TestCase):
                     " |bytes       packets       errs     |bytes       "+
                     "packets       errs")))
         self.failUnlessEqual(header(eno1), (test_tup))
+
+
+    #def test_main(self):
+        #self.assertRaises(IOError, main_bw_test())
+
+
 if __name__ == '__main__':
+    for i in sys.argv:
+        print i
     unittest.main()
