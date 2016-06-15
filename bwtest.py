@@ -13,11 +13,13 @@ class curr_prev_holder(object):
     prevEO = 0
     #currs
     bytes_in = 0
-    bytes_out = 0
-    packet_out = 0
     packet_in = 0
     errors_in = 0
+    bytes_out = 0
+    packet_out = 0
     errors_out = 0
+    #times
+    times_run = 0
 
 
     def __init__(self, interface):
@@ -70,6 +72,32 @@ class curr_prev_holder(object):
                    self.errors_out)
 
 
+    def data_arr(self, devname, filename):
+        try:
+            with open(filename, 'r') as dev_file:
+                interf = devname + ':'
+                if str(interf) not in interfaces():
+                    sys.exit("Please use a valid interface name.")
+                try:
+                    dev_file.seek(200)
+                    for line in dev_file:
+                        arr = line.split()
+                        if str(arr[0]) == str(interf):
+                            name = str(arr[0])
+                            if self.times_run % 10 == 0:
+                                new_tup =  header(name)
+                                print new_tup[0]
+                                print new_tup[1]
+                            self.times_run += 1
+                            return arr
+                except:
+                    print("file format incorrect")
+                    sys.exit()
+        except IOError:
+            print("'/proc/net/dev' not available. ")
+            sys.exit()
+
+
 def interfaces():
     with open('/proc/net/dev', 'r') as dev_file:
         interface_list = []
@@ -90,43 +118,18 @@ def header(name):
 
 
 def main_bw_test():
-    times_run = 0
     if len(sys.argv) != 2:
         print("Number of arguments incorrect")
         sys.exit()
     devname = str(sys.argv[1])
     bw_info = curr_prev_holder(devname)
     while True:
-        try:
-            with open('/proc/net/dev', 'r') as dev_file:
-                interf = devname + ':'
-                if str(interf) not in interfaces():
-                    sys.exit("Please use a valid interface name.")
-                else:
-                    # At the 200th char
-                    try:
-                        dev_file.seek(200)
-                        for line in dev_file:
-                            arr = line.split()
-                            if str(arr[0]) == str(interf):
-                                name = str(arr[0])
-                                if times_run % 10 == 0:
-                                    new_tup =  header(name)
-                                    print new_tup[0]
-                                    print new_tup[1]
-                                 # 66 chars in the header after the initial |.
-                                bw_info.set_currs(arr)
-                                dev_info = bw_info.new_dev_info()
-                                print (dev_info)
-                                bw_info.set_prvs(arr)
-                                times_run += 1
-                                time.sleep(1)
-                    except:
-                        print("file format incorrect")
-                        sys.exit()
-        except IOError:
-            print("'/proc/net/dev' not available. ")
-            sys.exit()
+        arr = bw_info.data_arr(devname, '/proc/net/dev')
+        bw_info.set_currs(arr)
+        dev_info = bw_info.new_dev_info()
+        print (dev_info)
+        bw_info.set_prvs(arr)
+        time.sleep(1)
 
 
 if __name__ == "__main__":

@@ -10,6 +10,12 @@ class Test(unittest.TestCase):
         self.failUnlessEqual(interfaces(), interfaces())
 
 
+    def test_data_arr(self):
+        tfile = 'testfile.txt'
+        x = curr_prev_holder("eno1")
+        self.failUnlessEqual(x.data_arr("eno3", tfile), ['eno3:', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'])
+
+
     def test_header(self):
         eno1 = "eno1"
         test_tup = ((str(eno1 +
