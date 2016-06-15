@@ -12,8 +12,8 @@ class Test(unittest.TestCase):
 
     def test_data_arr(self):
         tfile = 'testfile.txt'
-        x = curr_prev_holder("eno1")
-        self.failUnlessEqual(x.data_arr("eno3", tfile), ['eno3:', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'])
+        x = curr_prev_holder("lo")
+        self.failUnlessEqual(x.data_arr("lo", tfile), ['lo:', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'])
 
 
     def test_header(self):
