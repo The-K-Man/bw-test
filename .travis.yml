@@ -4,6 +4,6 @@ python:
 before_install:
   - pip install coveralls
 script:
-  coverage run --source=bwtest.py errortest.py Test 
+  coverage run --source=bwtest errortest.py Test 
 after_success: 
   coveralls
