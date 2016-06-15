@@ -14,6 +14,7 @@ class Test(unittest.TestCase):
         tfile = 'testfile.txt'
         x = curr_prev_holder("lo")
         self.failUnlessEqual(x.data_arr("lo", tfile), ['lo:', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'])
+        self.assertRaises(IOError, x.data_arr("lo",'randomtext.txt'))
 
 
     def test_header(self):

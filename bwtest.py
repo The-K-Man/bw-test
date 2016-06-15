@@ -4,29 +4,27 @@ import time
 
 
 class curr_prev_holder(object):
-    #prevs
+    #   prevs
     prevBI = 0
     prevBO = 0
     prevPI = 0
     prevPO = 0
     prevEI = 0
     prevEO = 0
-    #currs
+    #   currs
     bytes_in = 0
     packet_in = 0
     errors_in = 0
     bytes_out = 0
     packet_out = 0
     errors_out = 0
-    #times
+    #    times
     times_run = 0
-
 
     def __init__(self, interface):
         self.interface = interface
 
-
-# Makes data in Bytes human readable
+    # Makes data in Bytes human readable
     def human_read(self, data):
         data_sizes = ['Bps', 'KBps', 'MBps', 'GBps', 'TBps']
         if (data) == 0:
@@ -38,7 +36,6 @@ class curr_prev_holder(object):
         new_number = ('%.2f' % data)
         return str(str(new_number) + str(data_sizes[i]))
 
-
     def set_prvs(self, arr):
         self.prevBI = int(arr[1])
         self.prevBO = int(arr[9])
@@ -47,7 +44,6 @@ class curr_prev_holder(object):
         self.prevEI = int(arr[3])
         self.prevEO = int(arr[11])
 
-
     def set_currs(self, arr):
         self.bytes_in = self.human_read(int(arr[1]) - self.prevBI)
         self.bytes_out = self.human_read(int(arr[9]) - self.prevBO)
@@ -55,7 +51,6 @@ class curr_prev_holder(object):
         self.packet_out = self.human_read(int(arr[10]) - self.prevPO)
         self.errors_in = self.human_read(int(arr[3]) - self.prevEI)
         self.errors_out = self.human_read(int(arr[11]) - self.prevEO)
-
 
     def new_dev_info(self):
         return str((' ' *
@@ -71,7 +66,6 @@ class curr_prev_holder(object):
                    (14-len(self.packet_out)) +
                    self.errors_out)
 
-
     def data_arr(self, devname, filename):
         try:
             with open(filename, 'r') as dev_file:
@@ -85,7 +79,7 @@ class curr_prev_holder(object):
                         if str(arr[0]) == str(interf):
                             name = str(arr[0])
                             if self.times_run % 10 == 0:
-                                new_tup =  header(name)
+                                new_tup = header(name)
                                 print new_tup[0]
                                 print new_tup[1]
                             self.times_run += 1
@@ -95,7 +89,6 @@ class curr_prev_holder(object):
                     sys.exit()
         except IOError:
             print("'/proc/net/dev' not available. ")
-            sys.exit()
 
 
 def interfaces():
@@ -112,8 +105,8 @@ def header(name):
     header_tuple = (str(name +
                     " |   Receive                         |  Transmit"),
                     str(" " * len(name) +
-                    " |bytes       packets       errs     |bytes       "+
-                    "packets       errs"))
+                    " |bytes       packets       errs     |bytes       " +
+                        "packets       errs"))
     return header_tuple
 
 
@@ -133,4 +126,4 @@ def main_bw_test():
 
 
 if __name__ == "__main__":
-   main_bw_test()
+    main_bw_test()
