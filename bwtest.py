@@ -1,5 +1,7 @@
+import os 
 import sys
 import time
+import signal
 # Creates a list of all interfaces to assure the user used the correct input
 
 
@@ -28,10 +30,10 @@ class curr_prev_holder(object):
     def human_read(self, data):
         data_sizes = ['Bps', 'KBps', 'MBps', 'GBps', 'TBps']
         if (data) == 0:
-            return '0Bps'
+            return '0.00Bps'
         i = 0
         while data >= 1024 and i < len(data_sizes) - 1:
-                data /= 1024
+                data /= 1024.0
                 i += 1
         new_number = ('%.2f' % data)
         return str(str(new_number) + str(data_sizes[i]))
@@ -53,7 +55,7 @@ class curr_prev_holder(object):
         self.errors_out = self.human_read(int(arr[11]) - self.prevEO)
 
     def new_dev_info(self):
-        return str((' ' *
+        return str((' ' + ' ' *
                    len(self.interface) + '  ') + self.bytes_in +
                    ' ' * (12 - len(self.bytes_in)) +
                    self.packet_in + ' ' *
@@ -109,6 +111,21 @@ def header(name):
                         "packets       errs"))
     return header_tuple
 
+def exit_gracefully(signum, frame):
+    # restore the original signal handler as otherwise evil things will happen
+    # in raw_input when CTRL+C is pressed, and our signal handler is not re-entrant
+    signal.signal(signal.SIGINT, original_sigint)
+    try:
+        if raw_input("\nReally quit? (y/n)> ").lower().startswith('y'):
+            sys.exit(1)
+
+    except KeyboardInterrupt:
+        raise
+        print("Ok ok, quitting")
+        sys.exit()
+
+    # restore the exit gracefully handler here
+    signal.signal(signal.SIGINT, exit_gracefully)
 
 def main_bw_test():
     if len(sys.argv) != 2:
@@ -126,4 +143,7 @@ def main_bw_test():
 
 
 if __name__ == "__main__":
+    pid = os.getpid()
+    original_sigint = signal.getsignal(signal.SIGINT)
+    signal.signal(signal.SIGINT, exit_gracefully)
     main_bw_test()
