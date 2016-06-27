@@ -4,7 +4,6 @@ import time
 import signal
 # Creates a list of all interfaces to assure the user used the correct input
 
-
 class curr_prev_holder(object):
     #   prevs
     prevBI = 0
@@ -69,11 +68,10 @@ class curr_prev_holder(object):
                    self.errors_out)
 
     def data_arr(self, devname, filename):
+        interf = devname + ':'
+        interfaces(interf)
         try:
             with open(filename, 'r') as dev_file:
-                interf = devname + ':'
-                if str(interf) not in interfaces():
-                    sys.exit("Please use a valid interface name.")
                 try:
                     dev_file.seek(200)
                     for line in dev_file:
@@ -86,23 +84,37 @@ class curr_prev_holder(object):
                                 print new_tup[1]
                             self.times_run += 1
                             return arr
+                except KeyboardInterrupt:
+                    c_gracefully()
                 except:
                     print("file format incorrect")
                     sys.exit()
         except IOError:
             print("'/proc/net/dev' not available. ")
 
+def interfaces(interf):
+   with open('/proc/net/dev', 'r') as dev_file:
+       interface_list = []
+       for line in dev_file:
+           arr = line.split()
+           interface_list.append(arr[0])
+       if str(interf) not in interface_list:
+           try:
+               raise IOError
+           except IOError:
+               print('Please use the right interface device')
 
-def interfaces():
-    with open('/proc/net/dev', 'r') as dev_file:
-        interface_list = []
-        for line in dev_file:
-            arr = line.split()
-            interface_list.append(arr[0])
-        return interface_list
 
+def c_gracefully():
+    try:
+        response = raw_input('\nReally quit (y/n)> ').lower()
+        if response.startswith('y'):
+            sys.exit(1)
+    except KeyboardInterrupt:
+        raise
+        print("Ok ok, quitting")
+        sys.exit()
 
-# Prints the header
 def header(name):
     header_tuple = (str(name +
                     " |   Receive                         |  Transmit"),
@@ -110,22 +122,6 @@ def header(name):
                     " |bytes       packets       errs     |bytes       " +
                         "packets       errs"))
     return header_tuple
-
-def exit_gracefully(signum, frame):
-    # restore the original signal handler as otherwise evil things will happen
-    # in raw_input when CTRL+C is pressed, and our signal handler is not re-entrant
-    signal.signal(signal.SIGINT, original_sigint)
-    try:
-        if raw_input("\nReally quit? (y/n)> ").lower().startswith('y'):
-            sys.exit(1)
-
-    except KeyboardInterrupt:
-        raise
-        print("Ok ok, quitting")
-        sys.exit()
-
-    # restore the exit gracefully handler here
-    signal.signal(signal.SIGINT, exit_gracefully)
 
 def main_bw_test():
     if len(sys.argv) != 2:
@@ -139,11 +135,10 @@ def main_bw_test():
         dev_info = bw_info.new_dev_info()
         print (dev_info)
         bw_info.set_prvs(arr)
-        time.sleep(1)
+        try:
+            time.sleep(1)
+        except KeyboardInterrupt:
+            c_gracefully() 
 
-
-if __name__ == "__main__":
-    pid = os.getpid()
-    original_sigint = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, exit_gracefully)
+if  __name__ == "__main__":
     main_bw_test()

@@ -1,27 +1,14 @@
 import unittest
 import signal
 from mock import patch
-from bwtest import interfaces, header, exit_gracefully
+from bwtest import interfaces, header
 from bwtest import curr_prev_holder
 
-#def control_c():
- #   original_sigint = signal.getsignal(signal.SIGINT)
-  #  raise KeyboardInterrupt(signal.signal(signal.SIGINT, exit_gracefully(signal.SIGINT, original_sigint)))
-  #  signal.signal(signal.SIGINT, exit_gracefully)
-
-
 class Test(unittest.TestCase):
-    
-    original_sigint = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, exit_gracefully)
 
-    def get_input(text):
-        return input(text)
-
-    original_sigint = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, exit_gracefully)
     def test_interfaces(self):
-        self.failUnlessEqual(interfaces(), interfaces())
+        self.failUnlessEqual(interfaces("lo:"), interfaces("lo:"))
+        self.assertRaises(IOError , interfaces("lololol"))
 
     def test_data_arr(self):
         tfile = 'testfile.txt'
@@ -63,12 +50,6 @@ class Test(unittest.TestCase):
         x.set_currs(arr)
         x.set_prvs(arr)
         self.failUnlessEqual(x.new_dev_info(), "       1.00Bps     2.00Bps       3.00Bps   9.00Bps     10.00Bps      11.00Bps")
-
-   # @patch('errortest.Test.get_input' , return_value='no')
-    #def test_answer_no(self, input):
-     #   original_sigint = signal.getsignal(signal.SIGINT)
-       # signal.signal(signal.SIGINT, exit_gracefully)
-      #  self.assertRaises(TypeError, control_c())
 
 if __name__ == '__main__':
     unittest.main()
