@@ -106,14 +106,9 @@ def interfaces(interf):
 
 
 def c_gracefully():
-    try:
-        response = raw_input('\nReally quit (y/n)> ').lower()
+        response = raw_input('\nReally quit? (y/n)> ').lower()
         if response.startswith('y'):
             sys.exit(1)
-    except KeyboardInterrupt:
-        raise
-        print("Ok ok, quitting")
-        sys.exit()
 
 def header(name):
     header_tuple = (str(name +
