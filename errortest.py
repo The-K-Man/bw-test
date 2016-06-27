@@ -1,10 +1,15 @@
 import unittest
 import signal
+import mock
 from mock import patch
-from bwtest import interfaces, header
+from bwtest import interfaces, header, c_gracefully
 from bwtest import curr_prev_holder
 
 class Test(unittest.TestCase):
+
+    def test_c(self):
+     with mock.patch('__builtin__.raw_input', return_value='no'):
+        self.assertRaises(KeyboardInterrupt, c_gracefully())
 
     def test_interfaces(self):
         self.failUnlessEqual(interfaces("lo:"), interfaces("lo:"))
