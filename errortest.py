@@ -9,7 +9,7 @@ from bwtest import curr_prev_holder
 class Test(unittest.TestCase):
 
     def test_dev(self):
-        self.assertRaises(IndexError , get_dev())
+        self.assertRaises(TypeError , get_dev())
         sys.argv = ["errortest.py", "lo"] 
         print (get_dev())
 
