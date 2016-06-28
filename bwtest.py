@@ -122,7 +122,6 @@ def header(name):
 def get_dev():
     try:
         dev = str(sys.argv[1])
-        print str(sys.argv[1])
         return dev
     except IndexError:
         print ("Please call with a device name")
