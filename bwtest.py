@@ -1,3 +1,4 @@
+#!/usr/bin/env Python
 import os 
 import sys
 import time
@@ -118,11 +119,17 @@ def header(name):
                         "packets       errs"))
     return header_tuple
 
+def get_dev():
+    try:
+        dev = str(sys.argv[1])
+        print str(sys.argv[1])
+        return dev
+    except IndexError:
+        print ("Please call with a device name")
+         
+
 def main_bw_test():
-    if len(sys.argv) != 2:
-        print("Number of arguments incorrect")
-        sys.exit()
-    devname = str(sys.argv[1])
+    devname = get_dev()
     bw_info = curr_prev_holder(devname)
     while True:
         arr = bw_info.data_arr(devname, '/proc/net/dev')

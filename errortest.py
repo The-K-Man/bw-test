@@ -1,11 +1,16 @@
 import unittest
 import signal
 import mock
+import sys
 from mock import patch
-from bwtest import interfaces, header, c_gracefully
+from bwtest import interfaces, header, c_gracefully, get_dev
 from bwtest import curr_prev_holder
 
 class Test(unittest.TestCase):
+
+    def test_dev(self):
+        sys.argv = ["errortest.py", "lo"] 
+        print (get_dev())
 
     def test_c(self):
         with mock.patch('__builtin__.raw_input', return_value='no'):
