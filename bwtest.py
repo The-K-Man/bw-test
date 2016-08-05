@@ -7,7 +7,7 @@ import signal
 # Creates a list of all interfaces to assure the user used the correct input
 
 class curr_prev_holder(object):
-    devicename = sys.argv[1]
+    devicename = "eno1"
     #   prevs
     prevBI = 0
     prevBO = 0
