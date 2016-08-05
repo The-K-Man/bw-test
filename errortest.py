@@ -9,18 +9,15 @@ from bwtest import curr_prev_holder
 class Test(unittest.TestCase):
 
     def test_dev(self):
-        self.assertRaises(TypeError , get_dev())
+        with self.assertRaises(SystemExit) as cm:
+            get_dev()
+            self.assertEqual(cm.exception.code, 0)
         sys.argv = ["errortest.py", "lo"] 
         print (get_dev())
 
     def test_c(self):
-        with mock.patch('__builtin__.raw_input', return_value='no'):
-            self.assertRaises(KeyboardInterrupt, c_gracefully())
-        with mock.patch('__builtin__.raw_input', return_value='yes'):
             with self.assertRaises(SystemExit) as cm:
                 c_gracefully()
-
-            self.assertEqual(cm.exception.code, 1)
 
     def test_interfaces(self):
         self.failUnlessEqual(interfaces("lo:"), interfaces("lo:"))

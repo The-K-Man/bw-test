@@ -1,11 +1,13 @@
 #!/usr/bin/env Python
 import os 
 import sys
+import datetime
 import time
 import signal
 # Creates a list of all interfaces to assure the user used the correct input
 
 class curr_prev_holder(object):
+    devicename = sys.argv[1]
     #   prevs
     prevBI = 0
     prevBO = 0
@@ -22,6 +24,11 @@ class curr_prev_holder(object):
     errors_out = 0
     #    times
     times_run = 0
+    #    creating a file
+    text_file = open("graphable.dat", 'w')
+    text_file.write(devicename)
+    text_file.write("\n TIMESTAMP    [rx]bytes  [rx]packets  [rx]errs" +
+                    "  " + "[tx]bytes  [tx]packets  [tx]errs")
 
     def __init__(self, interface):
         self.interface = interface
@@ -39,6 +46,7 @@ class curr_prev_holder(object):
         return str(str(new_number) + str(data_sizes[i]))
 
     def set_prvs(self, arr):
+        self.devicename = str(arr[0])
         self.prevBI = int(arr[1])
         self.prevBO = int(arr[9])
         self.prevPI = int(arr[2])
@@ -53,6 +61,14 @@ class curr_prev_holder(object):
         self.packet_out = self.human_read(int(arr[10]) - self.prevPO)
         self.errors_in = self.human_read(int(arr[3]) - self.prevEI)
         self.errors_out = self.human_read(int(arr[11]) - self.prevEO)
+        currtime = str(time.time())
+        self.text_file.write("\n"+ currtime + ' ' + 
+                             str(int(arr[1]) - self.prevBI) + ' ' +
+                             str(int(arr[2]) - self.prevPI) + ' ' +
+                             str(int(arr[3]) - self.prevEI) + ' ' +
+                             str(int(arr[9]) - self.prevBO) + ' ' +
+                             str(int(arr[10]) - self.prevPO) + ' ' +
+                             str(int(arr[11]) - self.prevEO) + ' ')
 
     def new_dev_info(self):
         return str((' ' + ' ' *
@@ -70,6 +86,7 @@ class curr_prev_holder(object):
 
     def data_arr(self, devname, filename):
         interf = devname + ':'
+        self.devicename = str(interf)
         interfaces(interf)
         try:
             with open(filename, 'r') as dev_file:
@@ -87,6 +104,7 @@ class curr_prev_holder(object):
                             return arr
                 except KeyboardInterrupt:
                     c_gracefully()
+                    self.text_file.close()
                 except:
                     print("file format incorrect")
                     sys.exit()
@@ -105,11 +123,9 @@ def interfaces(interf):
            except IOError:
                print('Please use the right interface device')
 
-
 def c_gracefully():
-        response = raw_input('\nReally quit? (y/n)> ').lower()
-        if response.startswith('y'):
-            sys.exit(1)
+     print (' System exiting...')
+     sys.exit()
 
 def header(name):
     header_tuple = (str(name +
@@ -122,10 +138,11 @@ def header(name):
 def get_dev():
     try:
         dev = str(sys.argv[1])
-        return dev
     except IndexError:
         print ("Please call with a device name")
-         
+        sys.exit()
+    dev = str(sys.argv[1])
+    return dev
 
 def main_bw_test():
     devname = get_dev()
@@ -139,6 +156,7 @@ def main_bw_test():
         try:
             time.sleep(1)
         except KeyboardInterrupt:
+            bw_info.text_file.close()
             c_gracefully() 
 
 if  __name__ == "__main__":
