@@ -11,7 +11,7 @@ class Test(unittest.TestCase):
     def test_dev(self):
         with self.assertRaises(SystemExit) as cm:
             get_dev()
-            self.assertEqual(cm.exception.code, 0)
+            #self.assertEqual(cm.exception.code, 0)
         sys.argv = ["errortest.py", "lo"] 
         print (get_dev())
 
